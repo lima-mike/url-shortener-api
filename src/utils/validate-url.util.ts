@@ -2,12 +2,10 @@ import { isURL } from "validator";
 
 export const isValidUrl = (url: string) => {
   try {
-    const isValid = isURL(url);
-    if (!isValid) {
-      return false;
-    }
-
-    return true;
+    return isURL(url, {
+      protocols: ["http", "https"],
+      require_protocol: true,
+    });
   } catch {
     return false;
   }

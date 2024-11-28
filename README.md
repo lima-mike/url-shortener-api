@@ -70,7 +70,7 @@ Simple API for shortening URLs.
 #### **Redirect to Long URL**
 
 - **GET** `/:shortCode`
-- **Response**:
+- **Success Response**:
   - Redirects to the original `longUrl`.
 - **Error Response**:
   - `404 Not Found`
@@ -83,7 +83,7 @@ Simple API for shortening URLs.
 #### **Delete Short URL**
 
 - **DELETE** `/:shortCode`
-- **Response**:
+- **Success Response**:
   - `204 No Content`
 - **Error Response**:
   - `404 Not Found`

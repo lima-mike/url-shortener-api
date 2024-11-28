@@ -1,11 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { generate } from "shortid";
-import { isValidUrl } from "../utils/validateUrl";
+import { isValidUrl } from "../utils/validate-url.util";
 
 const prisma = new PrismaClient();
 
-export const shortenUrl = async (req: Request, res: Response) => {
+export const shortenUrl = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { longUrl } = req.body;
 
   try {
@@ -13,7 +17,6 @@ export const shortenUrl = async (req: Request, res: Response) => {
       res.status(400).json({ error: "Invalid url provided" });
       return;
     }
-
     const shortCode = generate();
     const url = await prisma.url.create({
       data: { longUrl, shortCode },
@@ -25,12 +28,15 @@ export const shortenUrl = async (req: Request, res: Response) => {
       longUrl: url.longUrl,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to shorten url" });
+    next(error);
   }
 };
 
-export const redirectToLongUrl = async (req: Request, res: Response) => {
+export const redirectToLongUrl = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { shortCode } = req.params;
 
   try {
@@ -47,11 +53,15 @@ export const redirectToLongUrl = async (req: Request, res: Response) => {
 
     res.redirect(url.longUrl);
   } catch (error) {
-    res.status(500).json({ error: "Failed to redirect to long url" });
+    next(error);
   }
 };
 
-export const deleteShortUrl = async (req: Request, res: Response) => {
+export const deleteShortUrl = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { shortCode } = req.params;
 
   try {
@@ -65,6 +75,6 @@ export const deleteShortUrl = async (req: Request, res: Response) => {
 
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete short url" });
+    next(error);
   }
 };

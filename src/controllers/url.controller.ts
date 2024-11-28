@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { generate } from "shortid";
 import { isValidUrl } from "../utils/validate-url.util";
+import { NotFoundError, ValidationError } from "../utils/errors.util";
 
 const prisma = new PrismaClient();
 
@@ -14,9 +15,9 @@ export const shortenUrl = async (
 
   try {
     if (!isValidUrl(longUrl)) {
-      res.status(400).json({ error: "Invalid url provided" });
-      return;
+      throw new ValidationError("Invalid URL provided");
     }
+
     const shortCode = generate();
     const url = await prisma.url.create({
       data: { longUrl, shortCode },
@@ -42,8 +43,7 @@ export const redirectToLongUrl = async (
   try {
     const url = await prisma.url.findFirst({ where: { shortCode } });
     if (!url) {
-      res.status(404).json({ error: "Url not found" });
-      return;
+      throw new NotFoundError("URL not found");
     }
 
     await prisma.url.update({
@@ -67,8 +67,7 @@ export const deleteShortUrl = async (
   try {
     const url = await prisma.url.findFirst({ where: { shortCode } });
     if (!url) {
-      res.status(404).json({ error: "Url not found" });
-      return;
+      throw new NotFoundError("URL not found");
     }
 
     await prisma.url.delete({ where: { shortCode } });

@@ -63,7 +63,8 @@ Simple API for shortening URLs.
   - `400 Bad Request`
   ```json
   {
-    "error": "Invalid url provided"
+    "status": "error",
+    "error": "Invalid URL provided"
   }
   ```
 
@@ -76,7 +77,8 @@ Simple API for shortening URLs.
   - `404 Not Found`
   ```json
   {
-    "error": "Url not found"
+    "status": "error",
+    "error": "URL not found"
   }
   ```
 
@@ -89,6 +91,7 @@ Simple API for shortening URLs.
   - `404 Not Found`
   ```json
   {
-    "error": "Url not found"
+    "status": "error",
+    "error": "URL not found"
   }
   ```
